@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input, textarea, select{
+    @apply border border-gray-500 rounded-md p-1 text-sm w-full mb-2 
+}
+
+.page-heading{
+    @apply font-bold text-2xl border-b mb-5
+}
+
+.btn-primary{
+    @apply border border-black w-16 cursor-pointer hover:bg-gray-700 hover:text-white rounded-md
+}
+
+table.basic{
+    @apply w-full
+}
+
+table.basic thead tr td{
+    @apply bg-blue-200
+}
+
+table.basic tr td{
+    @apply border p-1 border-gray-300
+}
