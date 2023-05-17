@@ -22,9 +22,7 @@ export const userReducer = createReducer(data, async (builder) => {
         return {...state, data: action.data};
     })
     .addCase(LOGOUT, (state, action) => {
-        const router = action.router;
         localStorage.clear();
-        router?.push('/auth');
         return {...state, data:{}}
     })
     .addCase(ADD_TO_CART, (state, action) => {

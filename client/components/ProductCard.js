@@ -1,10 +1,10 @@
 import { addToCart } from '@/helpers/use-apis/product';
 import Link from 'next/link';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ProductCard = ({_id, title, description, price, images}) => {
-
+    const user = useSelector((state) => state?.user?.data?._id);
     const url = `/product/${_id}`
     const dispatch = useDispatch();
 
@@ -20,7 +20,12 @@ const ProductCard = ({_id, title, description, price, images}) => {
         &#x20B9; {price}.00
             <button
             className='flex gap-1 min-w-fit border-slate-700 border px-1 rounded-md text-blue-500/[.8]'
-            onClick={()=>dispatch(addToCart(_id))}
+            onClick={()=>{
+                if(!user){
+                    return window.alert('Please login to add product to your cart');
+                }
+                dispatch(addToCart(_id))
+            }}
             >
             Add to
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

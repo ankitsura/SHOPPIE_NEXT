@@ -3,7 +3,6 @@ import Wrapper from './Wrapper';
 import ProductCard from './ProductCard';
 
 const NewProducts = ({newProducts}) => {
-    console.log('newProducts',newProducts);
   return (
     <Wrapper>
         <div className='mt-3'>

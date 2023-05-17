@@ -17,9 +17,14 @@ export const fetchCartItems = (items) => async (dispatch) => {
 };
 
 export const addToCart = (id) => async (dispatch) => {
-    API.post(`/products/addtocart/${id}`).then(({data})=>{
+    API.post(`/products/addtocart/${id}`).then((res)=>{
+        if(res.data === 'Product not found'){
+            window.alert('Product removed from the site')
+            window.location.reload(true);
+            return;
+        }
         dispatch({
-            type: 'ADD_TO_CART', productId: data
+            type: 'ADD_TO_CART', productId: res.data
         })
     });
 };

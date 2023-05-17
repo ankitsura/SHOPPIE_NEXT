@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import Wrapper from './Wrapper';
 import Link from 'next/link';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/helpers/use-apis/product';
 
 const Featured = ({product}) => {
+    const user = useSelector((state) => state?.user?.data?._id);
     const dispatch = useDispatch();
 
   return (
@@ -18,7 +19,12 @@ const Featured = ({product}) => {
                         <div className='flex gap-2 mt-5'>
                             <Link href={`/products/${product._id}`} className='bg-transparent border-y-[1px] border-0 text-[#fff] rounded-[5px] py-[5px] px-[15px]'>Read More</Link>
                             <button className='btn-primary flex gap-1'
-                            onClick={()=>dispatch(addToCart(product._id))}
+                            onClick={()=>{
+                                if(!user){
+                                    return window.alert('Please login to add product to your cart');
+                                }
+                                dispatch(addToCart(product._id))
+                            }}
                             >
                             Add to
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

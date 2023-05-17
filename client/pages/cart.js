@@ -23,7 +23,7 @@ const Cart = () => {
   const checkout = (e) => {
     e.preventDefault();
     dispatch(placeOrder(formData)).then((data)=>{
-      window.open(data.url,'_blank');
+      window.open(data.url, '_blank');
     });
   }
   
@@ -142,7 +142,7 @@ useEffect(() => {
                           ?
                             <tr key={p._id} className='m-10 border-t border-[#e5e5e5]'>
                               <td className='py-2'>
-                                <div className='flex items-center justify-center min-h-[150px] mt-1 max-h-[150px] max-w-[150px] p-2 bg-[#f0f0f0] rounded-lg shadow-[1px_1px_3px_rgba(0,0,0,0.5)]'>
+                                <div className='flex items-center justify-center min-h-[150px] mt-1 max-h-[150px] max-w-[150px] p-2 bg-[#f0f0f0] rounded-lg shadow-[1px_1px_3px_rgba(0,0,0,0.5)] overflow-hidden'>
                                   <img className='max-h-full' src={p.images} alt={p.title} />
                                 </div>
                                 {p.title}
@@ -157,7 +157,7 @@ useEffect(() => {
                               <td>&#8377;&nbsp;{cartItems && (cartItems.filter(id=>id===p._id).length)*p.price}</td>
                             </tr>
                           :
-                          <tr></tr>
+                          ''
                         ))
                       }
                       <tr className='border-y'>
