@@ -1,30 +1,34 @@
 import Layout from '@/components/Layout';
+import { addCategory, deleteCategory, editCategory } from '@/helpers/APIs/category';
 import axios from 'axios';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const Categories = () => {
+// 9882402040
+
+const Categories = ({allCategories}) => {
     
     const [name, setName] = useState('');
-    const [categories, setCategories] = useState([]);
-    const [parentCategory, setParentCategory] = useState('');
+    const [categories, setCategories] = useState(allCategories);
+    const [parentCategory, setParentCategory] = useState('000000000000000000000000');
     const [editing, setEditing] = useState('');
     const [properties, setProperties] = useState([{name: '', values: ''}]);
+
+    console.log(parentCategory);
     
     const saveCategory = async (e) => {
         e.preventDefault();
         const data = {name, parentCategory, properties};
         if(editing){
-            await axios.put('/api/categories', {...data, id: editing._id});
+            await editCategory({id: editing._id, data})
             setName('');
             setParentCategory('');
             setEditing('');
             setProperties([{name: '', values: ''}]);
             fetchCategories();
         }else{
-            await axios.post('/api/categories', data);
+            await addCategory(data);
             setName('');
             setParentCategory('');
             setEditing('');
@@ -34,7 +38,7 @@ const Categories = () => {
     }
 
     const fetchCategories = async (e) => {
-        const res = await axios.get('/api/categories');
+        const res = await axios.get('http://localhost:5000/admin/getAllCategories');
         setCategories(res.data);
     }
 
@@ -67,7 +71,6 @@ const Categories = () => {
     const handleEdit = async (category) => {
         setEditing(category);
         setName(category.name);
-        console.log(category.properties);
         setProperties(category.properties);
         if(!category.parentCategory){
             setParentCategory('');
@@ -78,29 +81,27 @@ const Categories = () => {
     
 
     const submit = (id, name) => {
-            confirmAlert({
-                title: `Do you really want to delete '${name}'?`,
-                buttons: [
-                  {
-                    label: 'Delete',
-                    onClick: async () => {
-                        const res = await axios.delete(`api/categories?id=${id}`);
-                        fetchCategories();
-                    }
-                  },
-                  {
-                    label: 'Cancel',
-                    onClick: () => {return;}
-                  }
-                ],
-                closeOnEscape: true,
-                closeOnClickOutside: true,
-            });
-        }
+        confirmAlert({
+            title: `Do you really want to delete '${name}'?`,
+            buttons: [
+                {
+                label: 'Delete',
+                onClick: async () => {
+                    await deleteCategory(id);
+                    fetchCategories();
+                }
+                },
+                {
+                label: 'Cancel',
+                onClick: () => {return;}
+                }
+            ],
+            closeOnEscape: true,
+            closeOnClickOutside: true,
+        });
+    }
 
-    useEffect(() => {
-        fetchCategories();
-    },[]);
+    
 
   return (
     <Layout>
@@ -112,9 +113,9 @@ const Categories = () => {
                     <input className='my-auto' onChange={e=>setName(e.target.value)} value={name} type="text" placeholder="Enter Category Name" required={true} />
                 </div>
                 <div className='flex flex-col my-auto w-full'>
-                    <label htmlFor="parentCategory">{editing ? `Change Parent ${editing.parentCategory}` : 'Select Parent Category'}</label>
+                    <label htmlFor="parentCategory">{editing ? `Change Parent ${editing.parentCategory?.name}` : 'Select Parent Category'}</label>
                     <select className='my-auto' name="parentCategory" value={parentCategory} onChange={(e)=>setParentCategory(e.target.value)} >
-                        <option value="">No parent category</option>
+                        <option value='000000000000000000000000'>No parent category</option>
                         {categories.length && categories.map((category) => (
                             <option key={category._id} value={category._id}>{category.name}</option>
                         ))}
@@ -212,3 +213,13 @@ const Categories = () => {
 }
 
 export default Categories;
+
+
+export const getServerSideProps = async () => {
+    const allCategories = await axios.get('http://localhost:5000/admin/getAllCategories');
+    return {
+      props: {
+        allCategories: JSON.parse(JSON.stringify(allCategories?.data))
+      }
+    }
+}

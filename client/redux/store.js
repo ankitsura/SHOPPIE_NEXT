@@ -1,9 +1,9 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import {cartReducer} from './cartReducer';
+import { configureStore, combineReducers, compose, applyMiddleware } from "@reduxjs/toolkit";
 // import videoReducer from './videoSlice';
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import { persistStore, persistReducer, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, FLUSH } from 'redux-persist';
 import storage from "redux-persist/lib/storage";
 import { userReducer } from "./userReducer";
+import thunk from "redux-thunk";
 
   const persistConfig = {
     key: 'root',
@@ -12,21 +12,19 @@ import { userReducer } from "./userReducer";
   }
 
   const rootReducer = combineReducers({
-          cart: cartReducer,
-          token: userReducer
+          user: userReducer
   }); 
 
   const persistedReducer = persistReducer(persistConfig, rootReducer);
 
   export const store = configureStore({
     reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
-  });
+    middleware: (thunk) => thunk({
+      serializableCheck: {
+        ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    })
+  }, compose(applyMiddleware(thunk)));
 
   export const persistor = persistStore(store);
 

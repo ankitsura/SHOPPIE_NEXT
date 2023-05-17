@@ -5,6 +5,6 @@ import Category from "../models/categorySchema.js";
                 const categories = await Category.find();
                 return res.status(201).json(categories);
             } catch (error) {
-           console.log(error); 
+           console.log(error);
         }
     }

@@ -7,7 +7,7 @@ const CategorySchema = new mongoose.Schema({
         require: true
     },
     parentCategory: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
     },
     properties: {

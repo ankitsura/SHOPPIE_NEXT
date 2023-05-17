@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }) {
             <Component {...pageProps} />
           </PersistGate>
         </Provider>
-      </GoogleOAuthProvider>,
+      </GoogleOAuthProvider>
     </>
   )
 }

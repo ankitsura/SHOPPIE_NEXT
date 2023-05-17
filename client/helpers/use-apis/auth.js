@@ -1,7 +1,4 @@
-
-
 import { API } from "../hosted-axios";
-
 
 
 
@@ -15,15 +12,14 @@ import { API } from "../hosted-axios";
 // export const addComment = (id, value) => API.post(`/posts/${id}/commentPost`, { value });
 
 export const register = (form) => async (dispatch) => {
-    const data = await API.post(`/user/signup`, form);
+    const {data} = await API.post(`/user/signup`, form);
     console.log(data);
-    dispatch({ type: 'SIGN_UP', data });
+    dispatch({ type: 'SIGN_UP', info:data });
 }
 
 export const login = (form) => async (dispatch) => {
     const {data} = await API.post(`/user/signin`, form);
-    const {result, token} = data;
-    dispatch({ type: 'LOGIN', token });
+    dispatch({ type: 'LOGIN', data });
 }
 
 

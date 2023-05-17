@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
-import axios from 'axios';
+import { getProduct, editProduct } from '@/helpers/APIs/product';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import app from '@/lib/firebase';
+import { getCategories } from '@/helpers/APIs/category';
 
 
 
@@ -12,12 +13,13 @@ const EditProduct = () => {
   const router = useRouter();
   const id = router?.query?.id?.[0]; 
 
-  const [product, setProduct] = useState({title:'', price:'', category:'', description:'', images: [], properties: {}});
+  const [product, setProduct] = useState({title:'', price:'', category:'000000000000000000000000', description:'', images: [], properties: {}});
   const [uploadProgress, setUploadProgress] = useState({imgProgress: 0});
   const [categories, setCategories] = useState([]);
-  
-  console.log('product',product);
-  console.log('categories',categories);
+
+  // console.log('id',id);
+  // console.log('product',product);
+  // console.log('categories',categories);
 
   const handleChange = (e) => {
     if(e.target.name === 'category'){
@@ -27,9 +29,9 @@ const EditProduct = () => {
     }
   }
 
-  const editProduct = (e) => {
+  const handleEdit = (e) => {
     e.preventDefault();
-    axios.patch(`/api/products?id=${id}`, product).then(()=> router.push('/products'));
+    editProduct({id, product}).then(()=> router.push('/products'));
   }
 
   const uploadImages = async (e) => {
@@ -85,7 +87,7 @@ const EditProduct = () => {
         // const start = 'appspot.com/o/';
         // const end = '?alt=';
         // const desertRef = img.split(start)[1].split(end)[0];
-        // console.log(desertRef);
+        // console.log(desertRef);editProduct
         // // Delete the file
         // deleteObject(desertRef).then(() => {
         //     // Delete the file from the database
@@ -98,10 +100,10 @@ const EditProduct = () => {
   }
 
   useEffect(() => {
-    axios.get(`/api/products?id=${id}`).then((res) => {
+    getProduct(id).then((res) => {
       setProduct({...res.data, category: res.data.category._id});
     }).then(()=>{
-      axios.get('/api/categories').then((res)=>{
+      getCategories().then((res)=>{
         setCategories(res.data)
     })});
   },[]);
@@ -122,14 +124,14 @@ const EditProduct = () => {
   return (
     <Layout>
         <h1 className='page-heading'>Edit Product</h1>
-        <form className='flex flex-col' onSubmit={editProduct}>
+        <form className='flex flex-col' onSubmit={handleEdit}>
           <label htmlFor="title">Product Name</label>
           <input name='title' type="text" value={product?.title} placeholder='product name' onChange={handleChange} required />
           <label htmlFor="category">Category</label>
           <select name='category' type="text" value={product?.category} placeholder='select category for the product' 
             onChange={handleChange}
           >
-            <option value="">Uncategorized</option>
+            <option value="000000000000000000000000">Uncategorized</option>
             { categories &&
               categories.map((category) => {
                 return <option key={category._id} value={category?._id}>{category?.name}</option>
@@ -144,7 +146,7 @@ const EditProduct = () => {
                   <div className='min-w-[60px]'>
                     {p?.name}
                   </div>
-                  <select value={product?.properties[p?.name]} onChange={(e)=> setProduct({...product, properties: {...product.properties, [p.name]: e.target.value}})}>
+                  <select value={product?.properties?.[p?.name]} onChange={(e)=> setProduct({...product, properties: {...product?.properties, [p?.name]: e.target?.value}})}>
                     <option value="">...Select...</option>
                     {p?.values.map((value, i)=>{
                       return <option key={i} value={value}>{value}</option>

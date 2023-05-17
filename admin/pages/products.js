@@ -1,16 +1,15 @@
 import Layout from '@/components/Layout';
+import { deleteProduct } from '@/helpers/APIs/product';
 import axios from 'axios';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-const Products = () => {
+const Products = ({allProducts}) => {
 
-    const [products, setProducts] = useState([]);
     const [deleted, setDeleted] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState(allProducts);
 
     const submit = (id, title) => {
         confirmAlert({
@@ -19,7 +18,7 @@ const Products = () => {
               {
                 label: 'Delete',
                 onClick: async () => {
-                    await axios.delete(`api/products?id=${id}`);
+                    await deleteProduct(id);
                     setDeleted(true);
                 }
               },
@@ -34,14 +33,11 @@ const Products = () => {
     }
 
     useEffect(()=>{
-        setLoading(true);
-        axios.get('api/products').then((res) => {
-            setProducts(res.data)
-        }).then(()=>setLoading(false))
         if(deleted){
-            setDeleted(false);
+            axios.get('http://localhost:5000/admin/getAllProducts').then(({data})=>setProducts(data))
         }
-    },[]);
+        console.log('running');
+    },[deleted]);
 
 
   return (
@@ -49,13 +45,6 @@ const Products = () => {
         <div className='mb-5'>
             <Link className='bg-gray-800 text-white p-2 rounded-md text-sm cursor-pointer active:scale-[97%]' href={'/products/new'}>Add new Product</Link>
         </div>
-        {
-            loading 
-            ?
-            <div className='text-6xl flex justify-center h-screen'>
-                <h1>Loading...</h1>
-            </div>
-            :
             <>
                 <table className='basic'>
                     <thead>
@@ -87,9 +76,18 @@ const Products = () => {
                     </tbody>
                 </table>
             </>
-        }
     </Layout>
   );
 }
 
 export default Products;
+
+
+export const getServerSideProps = async () => {
+    const allProducts = await axios.get('http://localhost:5000/admin/getAllProducts');
+    return {
+      props: {
+        allProducts: JSON.parse(JSON.stringify(allProducts?.data))
+      }
+    }
+}

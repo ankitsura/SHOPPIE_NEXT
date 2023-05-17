@@ -1,18 +1,36 @@
-
+import axios from "axios";9
 import { API } from "../hosted-axios";
 
 
-// API.interceptors.request.use((req) => {
-//     if(localStorage.getItem('profile')){
-//         req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`;
-//     }
-//     return req;
-//   });
 
+export const fetchProduct = (id) => axios.get(`http://localhost:5000/products/${id}`); 
 
-export const fetchProduct = (id) => API.get(`/products/${id}`);
-export const fetchProducts = () => API.get(`/products`);
-// export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
+export const fetchProducts = () => axios.get(`http://localhost:5000/products`);
+
+export const fetchCartItems = (items) => async (dispatch) => {
+    const res = await API.get(`/products/cartItems/${items}`);
+    if(res.data.message === ('jwt expired' || 'jwt error')){
+        dispatch({type: 'LOGOUT'});
+        return res
+    }
+    return res;
+};
+
+export const addToCart = (id) => async (dispatch) => {
+    API.post(`/products/addtocart/${id}`).then(({data})=>{
+        dispatch({
+            type: 'ADD_TO_CART', productId: data
+        })
+    });
+};
+
+export const removeFromCart = (id) => async (dispatch) => {
+    API.post(`/products/removefromcart/${id}`).then(({data})=>{
+        dispatch({
+            type: 'REMOVE_FROM_CART', productId: data
+        })
+    })
+};
 // export const getPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags || 'none'}`);
 // export const createPost = (newPost) => API.post('/posts', newPost);
 // export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);

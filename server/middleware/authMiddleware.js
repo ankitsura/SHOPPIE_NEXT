@@ -3,23 +3,22 @@ import dotenv  from 'dotenv';
 
 dotenv.config();
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
-        const isCustomAuth = token.length < 500;
-
         let decodedData;
-
-        if(token && isCustomAuth){
+        try {
             decodedData = jwt.verify(token, process.env.JWT_SECRET);
-            req.userId = decodedData?.user._id;
-        } else {
-            decodedData = jwt.decode(token);
-            req.userId = decodedData?.sub;
+        } catch (error) {
+            if(error.message === 'jwt expired'){
+                return res.status(200).json({message: error.message})
+            }
+            return res.status(200).json({message: 'jwt error'})
         }
+            req.userId = decodedData?.data._id;
         next();
     } catch (error) {
-        console.log(error);
+        console.log('middlewareError',error.message);
     }
 }
 

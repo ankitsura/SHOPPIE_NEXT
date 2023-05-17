@@ -4,12 +4,14 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import app from '@/lib/firebase';
+import { getCategories } from '@/helpers/APIs/category';
+import { addProduct } from '@/helpers/APIs/product';
 
 
 const NewProduct = () => {
 
   const router = useRouter();
-  const [product, setProduct] = useState({title:'',category:'', price:'', description:'', images: []})
+  const [product, setProduct] = useState({title:'',category:'000000000000000000000000', price:'', description:'', images: []})
   const [productProperties, setProductProperties] = useState({});
   const [uploadProgress, setUploadProgress] = useState({imgProgress: 0});
   const [categories, setCategories] = useState([]);
@@ -20,7 +22,7 @@ const NewProduct = () => {
   },[product.images]);
 
   useEffect(()=>{
-    axios.get('/api/categories').then((res)=>{
+    getCategories().then((res)=>{
       setCategories(res.data)
     })
   },[]);
@@ -30,7 +32,7 @@ const NewProduct = () => {
   }
   const createProduct = async (e) => {
       e.preventDefault();
-      await axios.post('/api/products', {...product, properties: productProperties}).then(()=>{
+      await addProduct({...product, properties: productProperties}).then(()=>{
         router.push('/products');
       }) 
   }
@@ -104,7 +106,7 @@ const NewProduct = () => {
   if(categories.length && product.category){
     const selectionProperties = [];
     const selCatInfo = categories.find(({_id})=> _id === product.category)
-    selectionProperties.push(selCatInfo.properties);
+    selectionProperties?.push(selCatInfo?.properties);
     const parentProperties = selCatInfo?.parentCategory?.properties
     selectionProperties.push(parentProperties);
     allProperties = selectionProperties.flat();
@@ -126,7 +128,7 @@ const NewProduct = () => {
         <input name='title' type="text" value={product.title} placeholder='product name' onChange={handleChange} required />
         <label htmlFor="category">Category</label>
         <select name='category' type="text" value={product.category} placeholder='select category for the product' onChange={handleChange}>
-          <option value="">Uncategorized</option>
+          <option value='000000000000000000000000'>Uncategorized</option>
           { categories &&
             categories.map((category, i) => {
               return <option key={i} value={category?._id}>{category?.name}</option>

@@ -26,8 +26,8 @@ const UserSchema = new mongoose.Schema({
         default: [],
     },
     orders: {
-        type: [String],
-        default: [],
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Order',
     },
     isAdmin: {
         type: Boolean,
