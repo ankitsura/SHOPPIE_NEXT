@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET;
 console.log('storageBucket',STORAGE_BUCKET);
 const firebaseConfig = {
-    apiKey:"AIzaSyAk1FrvgtSH65S7C6XoS5IwiHE1s06w8HU",
+    apiKey:process.env.apiKey,
 authDomain:"shoppie-384804.firebaseapp.com",
 projectId:"shoppie-384804",
 storageBucket:"shoppie-384804.appspot.com",
