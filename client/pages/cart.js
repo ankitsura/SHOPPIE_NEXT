@@ -23,7 +23,7 @@ const Cart = () => {
   const checkout = (e) => {
     e.preventDefault();
     dispatch(placeOrder(formData)).then((data)=>{
-      window.open(data.url, '_blank');
+      window.open(data.url);
     });
   }
   

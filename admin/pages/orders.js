@@ -23,11 +23,12 @@ const orderPage = ({allOrders}) => {
                     <th className='p-1'>Date</th>
                     <th className='p-1'>Recipient</th>
                     <th className='p-1'>Products</th>
+                    <th className='p-1'>Payment Status</th>
                 </tr>
             </thead>
             <tbody className=''>
             {domLoaded && orders.length && orders.map((order)=> (
-                order.paymentStatus && <tr key={order._id} className='border-b'>
+                <tr key={order._id} className='border-b'>
                     <td>{new Date(order.createdAt).toLocaleString()}</td>
                     <td>
                         {order.name} ({order.email}) <br />
@@ -43,6 +44,7 @@ const orderPage = ({allOrders}) => {
                             <br />
                         </>
                     ))}</td>
+                    <td className={order.paymentStatus ? 'text-green-600' : 'text-red-600'}>{order.paymentStatus ? 'Done' : 'Not Done'}</td>
                 </tr>
             ))}
             </tbody>

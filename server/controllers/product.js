@@ -4,16 +4,35 @@ import User from '../models/userSchema.js';
 
     export const getProducts = async (req, res) => {
         try {
-                const products = await Product.find().populate('category').sort({createdAt: -1});
+            const products = await Product.aggregate([{ $sample: { size: 40 } }]);
+            await Product.populate(products, {path: "category"});
                 return res.status(201).json(products);
             } catch (error) {
            console.log(error); 
         }
     }
+    
+    export const getFeaturedProducts = async (req, res) => {
+        try {
+                const products = await Product.find().limit(10).sort({createdAt: -1});
+                return res.status(201).json(products);
+            } catch (error) {
+           console.log(error); 
+        }
+    }
+
     export const getProductById = async (req, res) => {
         try {
-                const pId = req.params.id;
-                const product = await Product.findById(pId);
+                const pId = req.params.id.toString();
+                const product = await Product
+                .findById(pId)
+                .populate({
+                    path: 'category',
+                    populate: {
+                        path: 'parentCategory',
+                        model: 'Category'
+                    }
+                });
                 return res.status(201).json(product);
             } catch (error) {
            console.log(error); 

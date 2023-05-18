@@ -19,7 +19,7 @@ export default function HomePage({featuredProduct, newProducts}) {
 export const getServerSideProps = async () => {
   const featuredProductId = '64539a54edbf6f71b646a48d';
   const featuredProduct = await axios.get(`http://localhost:5000/products/${featuredProductId}`);
-  const newProducts = await axios.get('http://localhost:5000/products');
+  const newProducts = await axios.get('http://localhost:5000/products/featuredProducts');
   return {
     props: {
       featuredProduct: JSON.parse(JSON.stringify(featuredProduct?.data)),

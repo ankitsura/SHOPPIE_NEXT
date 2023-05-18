@@ -31,8 +31,8 @@ export const Header = () => {
             <nav className="flex flex-[5] justify-end pr-4 gap-8">
                 <Link href={'/'}>Home</Link>
                 <Link href={'/products'}>Products</Link>
-                <Link href={'/categories'}>Categories</Link>
-                <Link href={'/account'}>Account</Link>
+                {/* <Link href={'/categories'}>Categories</Link>
+                <Link href={'/account'}>Account</Link> */}
                 <Link href={'/cart'}>Cart ({cartItems?.filter((value,index,array)=>array.indexOf(value)===index).length})</Link>
                 {
                     user ?

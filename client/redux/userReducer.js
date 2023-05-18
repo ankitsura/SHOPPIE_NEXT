@@ -53,6 +53,6 @@ export const userReducer = createReducer(data, async (builder) => {
         let {data} = current(state);
         let cartItems = data.cartItems;
         cartItems = []
-        return {...state, data:{...data, cartItems, orders:[...data.orders, action.order.toString()]}}
+        return {...state, data:{...data, cartItems, orders:[...data?.orders, action?.order.toString()]}}
     })
 })

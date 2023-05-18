@@ -19,7 +19,7 @@ const ProductCard = ({_id, title, description, price, images}) => {
         <div className='px-1 font-medium text-lg flex items-center justify-between'>
         &#x20B9; {price}.00
             <button
-            className='flex gap-1 min-w-fit border-slate-700 border px-1 rounded-md text-blue-500/[.8]'
+            className='flex gap-1 min-w-fit border-slate-700 border px-1 rounded-md text-blue-500/[.8] hover:bg-black hover:text-white active:scale-[.9]'
             onClick={()=>{
                 if(!user){
                     return window.alert('Please login to add product to your cart');
