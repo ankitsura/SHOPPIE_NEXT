@@ -17,7 +17,7 @@ const Featured = ({product}) => {
                         <h1 className='text-3xl mb-2'>{product.title}</h1>
                         <p className=' text-[#aaa] text-[.9rem]'>{product.description}</p>
                         <div className='flex gap-2 mt-5'>
-                            <Link href={`/products/${product._id}`} className='bg-transparent border-y-[1px] border-0 text-[#fff] rounded-[5px] py-[5px] px-[15px]'>Read More</Link>
+                            <Link href={`/product/${product._id}`} className='bg-transparent border-y-[1px] border-0 text-[#fff] rounded-[5px] py-[5px] px-[15px]'>Read More</Link>
                             <button className='btn-primary flex gap-1'
                             onClick={()=>{
                                 if(!user){
